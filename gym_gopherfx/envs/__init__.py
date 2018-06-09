@@ -1,0 +1,1 @@
+from gym_gopherfx.envs.gopherfx_env import GopherfxEnv

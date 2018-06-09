@@ -1,0 +1,8 @@
+version: '2'
+services:
+  python:
+    build: .
+    ports:
+      - '8050:8050'
+    volumes:
+    - ./:/var/work/

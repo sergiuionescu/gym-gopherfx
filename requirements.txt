@@ -1,0 +1,9 @@
+dash==0.21.1
+dash-renderer==0.12.1
+dash-html-components==0.10.1
+dash-core-components==0.22.1
+pandas
+colorlover
+gym==0.9.3
+python-dotenv==0.8.2
+tensorflow==1.5.1
