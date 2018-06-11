@@ -1,2 +1,3 @@
 .idea/
 gym_gopher.egg-info/
+__pycache__/

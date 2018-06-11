@@ -4,6 +4,8 @@ import colorlover as cl
 import dash_html_components as html
 import pandas as pd
 import os
+import numpy as np
+import shutil
 
 currency = 'USDJPY'
 date = '20180401'
@@ -26,37 +28,41 @@ def get_daily_graph(graph_currency, graph_date):
 def get_daily_figure(graph_currency, graph_date):
     file_name = graph_currency + graph_date + '.csv'
     rates = pd.read_csv(os.path.join(base_path, 'rates/' + file_name), names=['date', 'rate'])
-    potential = pd.read_csv(os.path.join(base_path, 'potential/' + file_name),
-                            names=['start_date', 'end_date', 'profit', 'start_rate', 'end_rate', 'wait'])
-    figure_data = [{'x': rates['date'], 'y': rates['rate'], 'type': 'line', 'name': 'Rate'}] + \
-                  [{
-                      'x': potential['start_date'],
-                      'open': potential['start_rate'],
-                      'high': potential['end_rate'],
-                      'low': potential['start_rate'],
-                      'close': potential['end_rate'],
-                      'type': 'candlestick',
-                      'increasing': {'line': {'color': colorscale[0]}},
-                      'decreasing': {'line': {'color': colorscale[8]}},
-                      'name': 'Potential'
-                  }]
-    performance_file_name = os.path.join(os.path.dirname(__file__), 'performance/' + file_name)
-    if os.path.isfile(performance_file_name):
-        performance = pd.read_csv(performance_file_name,
-                                  names=['start_date', 'end_date', 'profit', 'start_rate', 'end_rate', 'wait'])
-        figure_data += [{
-            'x': performance['start_date'],
-            'open': performance['start_rate'],
-            'high': performance['end_rate'],
-            'low': performance['start_rate'],
-            'close': performance['end_rate'],
-            'type': 'candlestick',
-            'increasing': {'line': {'color': colorscale[1]}},
-            'decreasing': {'line': {'color': colorscale[4]}},
-            'name': 'Performance'
-        }]
+    figure_data = [{'x': rates['date'], 'y': rates['rate'], 'type': 'line', 'name': 'Rate'}]
+
+    reference_file = os.path.join(base_path, 'potential/' + file_name)
+    figure_data, total_reference = add_evolution_figure(figure_data, reference_file,
+                                                        "Reference",
+                                                        colorscale[0], colorscale[8])
+    performance_file = os.path.join(os.path.dirname(__file__), 'performance/' + file_name)
+    figure_data, total_performance = add_evolution_figure(figure_data, performance_file,
+                                                          "Performance", colorscale[1], colorscale[4])
+
+    if total_performance > total_reference:
+        shutil.copy(performance_file, reference_file)
+
     figure = {'data': figure_data, 'layout': {'title': graph_currency + ' ' + graph_date}}
     return figure
+
+
+def add_evolution_figure(figure_data, file_path, label, color_increasing, color_decreasing):
+    total = 0
+    if os.path.isfile(file_path):
+        data = pd.read_csv(file_path,
+                           names=['start_date', 'end_date', 'profit', 'start_rate', 'end_rate', 'wait'])
+        total = np.round(data['profit'].sum())
+        figure_data += [{
+            'x': data['start_date'],
+            'open': data['start_rate'],
+            'high': data['end_rate'],
+            'low': data['start_rate'],
+            'close': data['end_rate'],
+            'type': 'candlestick',
+            'increasing': {'line': {'color': color_increasing}},
+            'decreasing': {'line': {'color': color_decreasing}},
+            'name': label + " " + str(total)
+        }]
+    return figure_data, total
 
 
 default_graph = get_daily_graph(currency, date)
