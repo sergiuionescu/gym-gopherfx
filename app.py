@@ -49,7 +49,7 @@ def add_evolution_figure(figure_data, file_path, label, color_increasing, color_
     total = 0
     if os.path.isfile(file_path):
         data = pd.read_csv(file_path,
-                           names=['start_date', 'end_date', 'profit', 'start_rate', 'end_rate', 'wait'])
+                           names=['start_date', 'end_date', 'profit', 'start_rate', 'end_rate', 'wait', 'type', 'budget'])
         total = np.round(data['profit'].sum())
         figure_data += [{
             'x': data['start_date'],

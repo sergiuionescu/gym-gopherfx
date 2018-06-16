@@ -28,4 +28,6 @@ The available actions are:
 Reward:
 * 0 - for waiting/buying
 * trade_result - for selling
-* -1 - for selling with no open position or buying with an open position
+* -1 - when depleting the budget
+
+The episodes ends when the trading day is over or the budget is depleted.
