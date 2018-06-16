@@ -80,10 +80,17 @@ class GopherfxEnv(gym.Env):
                                         start_contract['investment'] *
                                         start_contract['observation'][1])
             self.budget += reward
-            self.sell_info = tuple(
-                [start_contract['observation'][0], contract['observation'][0], reward,
-                 start_contract['observation'][1],
-                 contract['observation'][1], self.elapsed - start_contract['invested_at'], action_code, self.budget])
+            if action_code == 'sell':
+                self.sell_info = tuple(
+                    [start_contract['observation'][0], contract['observation'][0], reward,
+                     start_contract['observation'][1],
+                     contract['observation'][1], self.elapsed - start_contract['invested_at'], action_code, self.budget])
+            else:
+                self.sell_info = tuple(
+                    [contract['observation'][0], start_contract['observation'][0], reward,
+                     contract['observation'][1],
+                     start_contract['observation'][1], self.elapsed - start_contract['invested_at'], action_code,
+                     self.budget])
         else:
             self.open_contracts[action_code].append(contract)
         return reward
