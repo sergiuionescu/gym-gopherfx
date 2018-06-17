@@ -39,7 +39,8 @@ def get_daily_figure(graph_currency, graph_date):
                                                           "Performance", colorscale[1], colorscale[4])
 
     if total_performance > total_reference:
-        shutil.copy(performance_file, reference_file)
+        if os.path.isfile(performance_file):
+            shutil.copy(performance_file, reference_file)
 
     figure = {'data': figure_data, 'layout': {'title': graph_currency + ' ' + graph_date}}
     return figure
