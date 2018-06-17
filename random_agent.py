@@ -7,7 +7,7 @@ import time
 import gym_gopherfx
 
 class RandomAgent(object):
-    performance_file = "performance/USDJPY20180401.csv"
+    performance_path = "performance/"
 
     def __init__(self, action_space):
         self.action_space = action_space
@@ -27,9 +27,11 @@ if __name__ == '__main__':
 
     reward = 0
     done = False
+
+    ob = env.reset()
     while True:
-        ob = env.reset()
-        with open(os.path.join(os.path.dirname(__file__), agent.performance_file), 'w') as pf:
+        name = env.get_episode_name()
+        with open(os.path.join(os.path.dirname(__file__), agent.performance_path, name + '.csv'), 'w') as pf:
             file_writer = csv.writer(pf)
             while True:
                 action = agent.act(ob, reward, done)
@@ -41,4 +43,4 @@ if __name__ == '__main__':
                 if output:
                     print(output)
                     file_writer.writerow(output)
-        time.sleep(5)
+        time.sleep(0.1)

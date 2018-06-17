@@ -2,8 +2,8 @@ import gym
 from gym.spaces import Discrete, Box
 import pandas as pd
 import os
-from gym import error, spaces, utils
 from gym.utils import seeding
+from gym_gopherfx.envs.data.reader import Reader
 
 
 class GopherfxEnv(gym.Env):
@@ -17,18 +17,17 @@ class GopherfxEnv(gym.Env):
         self.observation_space = Box(low=0, high=1000, shape=(1,))
         self.action_space = Discrete(3)
         self.open_contracts = {'buy': [], 'sell': []}
-        self.investment = 0
-        self.investment_observation = None
-        self.invested_at = 0
         self.elapsed = 0
+        self.episode = 0
         self.budget = 100
         self.sell_info = None
 
         self.last_action = None
         self.last_reward = None
 
-        self.data = pd.read_csv(os.path.join(os.path.dirname(__file__), self.rates_file), names=['date', 'rate'])
-        self.episode_length, columns = self.data.shape
+        self.data = Reader.read(os.path.join(os.path.dirname(__file__), 'data/rates/'))
+        self.max_episodes = len(self.data)
+        self.episode_length, columns = self.get_episode_data().shape
 
     def step(self, action):
         self.last_action = action
@@ -59,9 +58,10 @@ class GopherfxEnv(gym.Env):
         done = 0
         if self.elapsed >= self.episode_length - 1:
             done = 1
-            self.elapsed = 0
+            self.reset_episode()
         elif self.budget <= 0:
             done = 1
+            self.reset_episode()
             reward = -1
 
         self.last_reward = reward
@@ -82,12 +82,14 @@ class GopherfxEnv(gym.Env):
             self.budget += reward
             if action_code == 'sell':
                 self.sell_info = tuple(
-                    [start_contract['observation'][0], contract['observation'][0], reward,
+                    [start_contract['observation'][0], contract['observation'][0],
+                     reward,
                      start_contract['observation'][1],
                      contract['observation'][1], self.elapsed - start_contract['invested_at'], action_code, self.budget])
             else:
                 self.sell_info = tuple(
-                    [contract['observation'][0], start_contract['observation'][0], reward,
+                    [contract['observation'][0], start_contract['observation'][0],
+                     reward,
                      contract['observation'][1],
                      start_contract['observation'][1], self.elapsed - start_contract['invested_at'], action_code,
                      self.budget])
@@ -96,15 +98,25 @@ class GopherfxEnv(gym.Env):
         return reward
 
     def get_observation(self):
-        observation = tuple([self.data['date'][self.elapsed], self.data['rate'][self.elapsed]])
+        data = self.get_episode_data()
+        observation = tuple([data['date'][self.elapsed], data['rate'][self.elapsed]])
         return observation
+
+    def reset_episode(self):
+        self.open_contracts = {'buy': [], 'sell': []}
+        self.budget = 100
+        self.episode += 1
+        self.elapsed = 0
+        self.episode_length, columns = self.get_episode_data().shape
+        if self.episode > self.max_episodes:
+            self.reset()
 
     def reset(self):
         self.open_contracts = {'buy': [], 'sell': []}
-        self.investment = 0
         self.budget = 100
-        self.invested_at = 0
-        self.investment_observation = None
+        self.episode = 0
+        self.elapsed = 0
+        self.episode_length, columns = self.get_episode_data().shape
 
     def render(self, mode='human', close=False):
         # output = "Action " + str(self.last_action) + ", reward " + str(self.last_reward) + " observation %s" % (
@@ -118,3 +130,9 @@ class GopherfxEnv(gym.Env):
     def _seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
+
+    def get_episode_data(self):
+        return self.data[self.episode % self.max_episodes]['rates']
+
+    def get_episode_name(self):
+        return self.data[self.episode % self.max_episodes]['name']
