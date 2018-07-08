@@ -25,7 +25,7 @@ class GopherfxEnv(gym.Env):
         self.last_action = None
         self.last_reward = None
 
-        self.data = Reader.read('data/rates/')
+        self.data = Reader.read(os.path.join(os.path.dirname(__file__), 'data/rates/'))
         self.max_episodes = len(self.data)
         self.episode_length, columns = self.get_episode_data().shape
 
