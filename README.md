@@ -40,11 +40,11 @@ The episodes ends when the trading day is over or the budget is depleted.
 ### Gopherfx-v1
 
 Observation:
-Candle rate data representing the market state at the step moment
-Example:
+A tuple of Candle rate data representing the market state at the step moment
+
+Raw example:
 ```json
 {
-  "complete": true,
   "volume": 45,
   "time": "2018-06-01T00:00:00.000000000Z",
   "bid": {
