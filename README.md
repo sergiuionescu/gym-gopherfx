@@ -73,4 +73,4 @@ Reward:
 * trade_result - for selling
 * -1 - when depleting the budget
 
-The episodes ends when the trading day is over or the budget is depleted.
+The episode ends when the trading day is over or the budget is depleted.

@@ -1,1 +1,2 @@
-from gym_gopherfx.envs.gopherfxv0_env import GopherfxEnv
+from gym_gopherfx.envs.gopherfxv0_env import GopherfxV0Env
+from gym_gopherfx.envs.gopherfxv1_env import GopherfxV1Env
