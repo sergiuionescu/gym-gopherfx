@@ -31,8 +31,8 @@ The available actions are:
 * 2 - sell
 
 Reward:
-* 0 - for waiting/buying
-* trade_result - for selling
+* 0 - for waiting/first buy/first sell
+* trade_result - for closing an open position
 * -1 - when depleting the budget
 
 The episodes ends when the trading day is over or the budget is depleted.
@@ -69,8 +69,8 @@ The available actions are:
 * 2 - sell
 
 Reward:
-* 0 - for waiting/buying
-* trade_result - for selling
+* 0 - for waiting/first buy/first sell
+* trade_result - for closing an open position
 * -1 - when depleting the budget
 
 The episode ends when the trading day is over or the budget is depleted.
