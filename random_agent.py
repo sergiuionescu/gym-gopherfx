@@ -7,7 +7,7 @@ import time
 import gym_gopherfx
 
 class RandomAgent(object):
-    performance_path = "performance/"
+    performance_path = "data/performance/"
 
     def __init__(self, action_space):
         self.action_space = action_space
@@ -18,7 +18,7 @@ class RandomAgent(object):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=None)
-    parser.add_argument('env_id', nargs='?', default='Gopherfx-v0', help='Select the environment to run')
+    parser.add_argument('env_id', nargs='?', default='Gopherfx-v1', help='Select the environment to run')
     args = parser.parse_args()
 
     env = gym.make(args.env_id)

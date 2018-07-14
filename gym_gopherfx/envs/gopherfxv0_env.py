@@ -1,14 +1,11 @@
 import gym
 from gym.spaces import Discrete, Box
-import pandas as pd
-import os
 from gym.utils import seeding
 from gym_gopherfx.envs.data.reader import Reader
 
 
-class GopherfxEnv(gym.Env):
+class GopherfxV0Env(gym.Env):
     metadata = {'render.modes': ['human']}
-    rates_file = "data/rates/USDJPY20180401.csv"
     spread = 0.015
     multiplier = 100
     action_investment = 1
@@ -25,7 +22,7 @@ class GopherfxEnv(gym.Env):
         self.last_action = None
         self.last_reward = None
 
-        self.data = Reader.readcsv(os.path.join(os.path.dirname(__file__), 'data/rates/'))
+        self.data = Reader.readcsv('data/rates/')
         self.max_episodes = len(self.data)
         self.episode_length, columns = self.get_episode_data().shape
 
@@ -136,3 +133,9 @@ class GopherfxEnv(gym.Env):
 
     def get_episode_name(self):
         return self.data[self.episode % self.max_episodes]['name']
+
+    def _step(self, action):
+        pass
+
+    def _reset(self):
+        pass
