@@ -25,6 +25,11 @@ class GopherfxV1Env(gym.Env):
         self.max_episodes = len(self.data)
         self.episode_length = self.get_episode_length()
 
+    def re_init(self, data_folder='data/candlerates/EUR_USD/2018-06/'):
+        self.data = Reader.readjson(data_folder)
+        self.max_episodes = len(self.data)
+        self.episode_length = self.get_episode_length()
+
     def step(self, action):
         self.last_action = action
         self.sell_info = {}
