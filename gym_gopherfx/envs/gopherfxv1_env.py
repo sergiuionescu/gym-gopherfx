@@ -9,7 +9,7 @@ class GopherfxV1Env(gym.Env):
     multiplier = 100
     action_investment = 1
 
-    def __init__(self):
+    def __init__(self, data_folder='data/candlerates/EUR_USD/2018-06/'):
         self.observation_space = Box(low=0, high=1000, shape=(1,))
         self.action_space = Discrete(3)
         self.open_contracts = {'ask': [], 'bid': []}
@@ -21,7 +21,7 @@ class GopherfxV1Env(gym.Env):
         self.last_action = None
         self.last_reward = None
 
-        self.data = Reader.readjson('data/candlerates/EUR_USD/2018-06/')
+        self.data = Reader.readjson(data_folder)
         self.max_episodes = len(self.data)
         self.episode_length = self.get_episode_length()
 

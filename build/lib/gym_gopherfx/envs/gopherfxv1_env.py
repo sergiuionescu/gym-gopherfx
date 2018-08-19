@@ -29,7 +29,7 @@ class GopherfxV1Env(gym.Env):
         self.last_action = action
         self.sell_info = {}
 
-        observation = self.get_observation()
+        observation = self.get_raw_observation()
 
         reward = 0
         if action == 0:
@@ -63,7 +63,7 @@ class GopherfxV1Env(gym.Env):
         self.last_reward = reward
         self.elapsed += 1
 
-        return observation, reward, done, {}
+        return self.get_observation(), reward, done, {}
 
     def execute_contract(self, action_code, complementary_action_code, contract):
         reward = 0
@@ -97,6 +97,23 @@ class GopherfxV1Env(gym.Env):
         return reward
 
     def get_observation(self):
+        data = self.get_episode_data()
+        data = self.get_episode_data()
+        observation = tuple([
+            data[self.elapsed]['volume'],
+            data[self.elapsed]['time'],
+            data[self.elapsed]['bid']['o'],
+            data[self.elapsed]['bid']['h'],
+            data[self.elapsed]['bid']['l'],
+            data[self.elapsed]['bid']['c'],
+            data[self.elapsed]['ask']['o'],
+            data[self.elapsed]['ask']['h'],
+            data[self.elapsed]['ask']['l'],
+            data[self.elapsed]['ask']['c'],
+        ])
+        return observation
+
+    def get_raw_observation(self):
         data = self.get_episode_data()
         observation = tuple([data[self.elapsed]])
         return observation
