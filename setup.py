@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(name='gym_gopherfx',
-      version='0.2.3',
+      version='0.2.4',
       install_requires=['gym'],author="Sergiu Ionescu",
       author_email="sergiu.ionescu@gmail.com",
       description="A gym environment for reinforcement training on forex historical data.",
