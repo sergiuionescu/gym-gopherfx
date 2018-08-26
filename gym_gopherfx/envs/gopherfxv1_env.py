@@ -56,8 +56,9 @@ class GopherfxV1Env(gym.Env):
             complementary_action_code = 'ask'
             reward = self.execute_contract(action_code, complementary_action_code, contract)
 
+        self.elapsed += 1
         done = 0
-        if self.elapsed >= self.episode_length - 1:
+        if self.elapsed > self.episode_length - 1:
             done = 1
             self.reset_episode()
         elif self.budget <= 0:
@@ -66,7 +67,6 @@ class GopherfxV1Env(gym.Env):
             reward = -1
 
         self.last_reward = reward
-        self.elapsed += 1
 
         return self.get_observation(), reward, done, {}
 
