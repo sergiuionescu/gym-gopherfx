@@ -49,7 +49,7 @@ class GopherfxV1Env(gym.Env):
             reward = self.execute_contract(action_code, complementary_action_code, contract)
 
         elif action == 2:
-            contract = {'investment': self.action_investment * self.multiplier,
+            contract = {'investment': - self.action_investment * self.multiplier,
                         'observation': observation,
                         'invested_at': self.elapsed}
             action_code = 'bid'
@@ -72,14 +72,11 @@ class GopherfxV1Env(gym.Env):
 
     def execute_contract(self, action_code, complementary_action_code, contract):
         reward = 0
-        reward_modifier = 1
-        if action_code == 'bid':
-            reward_modifier = -1
+
         if len(self.open_contracts[complementary_action_code]):
             start_contract = self.open_contracts[complementary_action_code].pop(0)
-            reward = reward_modifier * (contract['investment'] * float(contract['observation'][0][action_code]['c']) -
-                                        start_contract['investment'] *
-                                        float(start_contract['observation'][0][complementary_action_code]['c']))
+            reward = contract['investment'] * float(contract['observation'][0][action_code]['c']) \
+                + start_contract['investment'] * float(start_contract['observation'][0][complementary_action_code]['c'])
             self.budget += reward
             if action_code == 'bid':
                 self.sell_info = tuple(
@@ -102,7 +99,6 @@ class GopherfxV1Env(gym.Env):
         return reward
 
     def get_observation(self):
-        data = self.get_episode_data()
         data = self.get_episode_data()
         observation = tuple([
             data[self.elapsed]['volume'],
