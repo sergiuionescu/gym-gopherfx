@@ -74,9 +74,8 @@ class GopherfxV1Env(gym.Env):
         reward = 0
 
         if len(self.open_contracts[complementary_action_code]):
+            reward = self.get_contract_value(self.get_raw_observation()[0])
             start_contract = self.open_contracts[complementary_action_code].pop(0)
-            reward = contract['investment'] * float(contract['observation'][0][action_code]['c']) \
-                + start_contract['investment'] * float(start_contract['observation'][0][complementary_action_code]['c'])
             self.budget += reward
             if action_code == 'bid':
                 self.sell_info = tuple(
@@ -100,19 +99,49 @@ class GopherfxV1Env(gym.Env):
 
     def get_observation(self):
         data = self.get_episode_data()
+        current = data[self.elapsed]
         observation = tuple([
-            data[self.elapsed]['volume'],
-            data[self.elapsed]['time'],
-            data[self.elapsed]['bid']['o'],
-            data[self.elapsed]['bid']['h'],
-            data[self.elapsed]['bid']['l'],
-            data[self.elapsed]['bid']['c'],
-            data[self.elapsed]['ask']['o'],
-            data[self.elapsed]['ask']['h'],
-            data[self.elapsed]['ask']['l'],
-            data[self.elapsed]['ask']['c'],
+            current['volume'],
+            current['time'],
+            current['bid']['o'],
+            current['bid']['h'],
+            current['bid']['l'],
+            current['bid']['c'],
+            current['ask']['o'],
+            current['ask']['h'],
+            current['ask']['l'],
+            current['ask']['c'],
+            self.get_contract_value(current),
+            self.get_contract_close_action_type()
         ])
         return observation
+
+    def get_contract_value(self, current_observation):
+        contract_value = 0.0
+        action_code = False
+        if len(self.open_contracts['bid']):
+            start_contract = self.open_contracts['bid'][0]
+            action_code = 'ask'
+            complementary_action_code = 'bid'
+        if len(self.open_contracts['ask']):
+            start_contract = self.open_contracts['ask'][0]
+            action_code = 'bid'
+            complementary_action_code = 'ask'
+
+        if action_code:
+            contract_value = start_contract['investment'] * (
+                    float(current_observation[action_code]['c'])
+                    - float(start_contract['observation'][0][complementary_action_code]['c']))
+        return contract_value
+
+    def get_contract_close_action_type(self):
+        close_action_type = 0
+        if len(self.open_contracts['bid']):
+            close_action_type = 2
+        if len(self.open_contracts['ask']):
+            close_action_type = 1
+
+        return close_action_type
 
     def get_raw_observation(self):
         data = self.get_episode_data()

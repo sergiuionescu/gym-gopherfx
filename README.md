@@ -40,7 +40,9 @@ The episodes ends when the trading day is over or the budget is depleted.
 ### Gopherfx-v1
 
 Observation:
-A tuple of Candle rate data representing the market state at the step moment
+- A tuple of Candle rate data representing the market state at the step moment
+- The value for the current open position
+- The action required to close the current open position
 
 Raw example:
 ```json
