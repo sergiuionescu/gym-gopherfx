@@ -137,9 +137,9 @@ class GopherfxV1Env(gym.Env):
     def get_contract_close_action_type(self):
         close_action_type = 0
         if len(self.open_contracts['bid']):
-            close_action_type = 2
-        if len(self.open_contracts['ask']):
             close_action_type = 1
+        if len(self.open_contracts['ask']):
+            close_action_type = 2
 
         return close_action_type
 
