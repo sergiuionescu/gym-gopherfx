@@ -6,4 +6,4 @@ pandas
 colorlover
 gym==0.9.3
 python-dotenv==0.8.2
-tensorflow==1.5.1
+tensorflow>=1.13.1

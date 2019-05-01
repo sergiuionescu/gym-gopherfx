@@ -15,7 +15,7 @@ Access [http://127.0.0.1:8050/](http://127.0.0.1:8050/) to access the dashboard.
 
 To start a random agent and see live evolutions:
 ```bash
-python random_agent.py
+docker exec -it gym-gopherfx_python_1 python random_agent.py
 ```
 
 ## About the environment
