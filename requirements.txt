@@ -1,4 +1,4 @@
-dash==0.21.1
+dash==2.15.0
 dash-renderer==0.12.1
 dash-html-components==0.10.1
 dash-core-components==0.22.1
