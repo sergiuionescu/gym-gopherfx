@@ -1,6 +1,6 @@
 dash==0.21.1
 dash-renderer==0.12.1
-dash-html-components==0.10.1
+dash-html-components==2.0.0
 dash-core-components==0.22.1
 pandas
 colorlover
